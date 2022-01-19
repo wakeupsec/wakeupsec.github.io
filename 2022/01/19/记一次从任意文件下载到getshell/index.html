@@ -1,0 +1,160 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>记一次从任意文件下载到getshell | Wake</title><meta name="keywords" content="Web渗透测试"><meta name="author" content="Wake"><meta name="copyright" content="Wake"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="某日闲来无事，上fofa搜了xx系统，想着碰碰运气类似这样随便挑了一个站点打开Em…，试试运气，反手admin admin就进去了是一个管理系统然后根据网站的功能点，随便点击几个，发现除了常规的操作也没啥了，翻了一会，发现有一个文件下载操作好家伙，藏得挺深，抓包看看，请求的地址好像是一个文件fileName改成**..&#x2F;etc&#x2F;passwd看看，好家伙，报错了看来应该不是这个路径，随后依次尝试了.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="记一次从任意文件下载到getshell">
+<meta property="og:url" content="http://example.com/2022/01/19/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%88%B0getshell/index.html">
+<meta property="og:site_name" content="Wake">
+<meta property="og:description" content="某日闲来无事，上fofa搜了xx系统，想着碰碰运气类似这样随便挑了一个站点打开Em…，试试运气，反手admin admin就进去了是一个管理系统然后根据网站的功能点，随便点击几个，发现除了常规的操作也没啥了，翻了一会，发现有一个文件下载操作好家伙，藏得挺深，抓包看看，请求的地址好像是一个文件fileName改成**..&#x2F;etc&#x2F;passwd看看，好家伙，报错了看来应该不是这个路径，随后依次尝试了.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2022-01-19T03:42:13.000Z">
+<meta property="article:modified_time" content="2022-01-19T03:43:36.417Z">
+<meta property="article:author" content="Wake">
+<meta property="article:tag" content="Web渗透测试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/01/19/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%88%B0getshell/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '记一次从任意文件下载到getshell',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2022-01-19 11:43:36'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="Wake" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/%E5%85%B3%E4%BA%8E"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly%E4%B8%BB%E9%A2%98"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Wake</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fa fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fa fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fa fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/messageboard/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/timeline/"><i class="fa-fw fa fa-bell"></i><span> 日志</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-list"></i><span> 菜单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/%E5%85%B3%E4%BA%8E"><i class="fa-fw /about/"></i><span> 0</span></a></li><li><a class="site-page child" href="/myself"><i class="fa-fw /myself/"></i><span> 1</span></a></li><li><a class="site-page child" href="/butterfly%E4%B8%BB%E9%A2%98"><i class="fa-fw https://github.com/jerryc127/hexo-theme-butterfly/"></i><span> 2</span></a></li></ul></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">记一次从任意文件下载到getshell</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-01-19T03:42:13.000Z" title="发表于 2022-01-19 11:42:13">2022-01-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-01-19T03:43:36.417Z" title="更新于 2022-01-19 11:43:36">2022-01-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="记一次从任意文件下载到getshell"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>某日闲来无事，上fofa搜了xx系统，想着碰碰运气<br>类似这样<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962401945-06bfc776-1409-4fb2-9e96-5061fd78fa9c.png#"><br>随便挑了一个站点打开<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962402443-aecb440e-416b-413b-b289-961391615867.png#"><br>Em…，试试运气，反手admin admin就进去了<br>是一个管理系统<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962402851-a6244bc2-c300-4fb7-95a0-aa415974eb1d.png#"><br>然后根据网站的功能点，随便点击几个，发现除了常规的操作也没啥了，翻了一会，发现有一个文件下载操作<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962403273-634408ce-f67f-44a9-9e32-6298265be4da.png#"><br>好家伙，藏得挺深，抓包看看，请求的地址好像是一个文件<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962403541-0102e609-e36d-4027-8182-f3bf84f25beb.png#"><br>fileName改成**../etc/passwd<strong>看看，好家伙，报错了<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962403846-d127d1f4-2e97-4084-80b5-d86312534e1c.png#"><br>看来应该不是这个路径，随后依次尝试了../../etc/passwd和../../../etc/passwd都是500错误，到了../../../../etc/passwd的时候就能访问到了<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962404209-7733cc1e-97eb-42ad-beab-1ac0571edb65.png#"><br>芜湖，再看看能不能读历史命令，如果可以读历史命令，可以看看有没有网站备份文件或者网站安装包，嘿嘿，改路径为/root/.bash_history，访问！….500错误<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962404696-76463f06-7053-4ab3-bb19-d21193794852.png#"><br>看来应该是权限不够。没办法了。从其他地方入手吧。<br>接下来可以F12看看网站源代码，用源代码中标志性的语句或者文件去fofa搜索相同的系统，说不定会有root权限，大概像这样<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962405264-bc2640ac-3170-4ee9-8696-81b5cd5fc547.png#"><br>有了相同的系统之后，再次尝试弱口令<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962405772-4364a938-5d38-412d-8250-96589b5d6e18.png#"><br>可能是最近运气不错吧，弱口令又进去了。嘿嘿<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962406095-bfbb2c39-4eb7-4dcd-89c8-fda4357d3e92.png#"><br>接下来尝试刚刚的操作，下载</strong>../../../../etc/passwd**文件看看，<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962406413-2b078aa4-2164-43a0-9b5a-7a558605d5df.png#"><br>再试试读历史命令/root/.bash.history<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962406955-57288c4a-cadc-419d-9254-67d4e78ee2e0.png#"><br>可以读到历史命令</p>
+<p>慢慢翻，最终发现有网站源码<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962407422-d4a25575-d3ac-4c20-a299-53a7d256a713.png#"><br>反手下载下来<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962407672-b5f22f15-38fc-4f50-98a0-80d5dce564b4.png#"><br>解压一下，<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962407936-1eea578a-bfa6-40ad-a80d-b5f5f7e37c4a.png#"><br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962408217-f0e85a3e-56e5-490e-bf30-a910bdb26615.png#"><br>JSP的站，没学过java的我裂开了，先跟着历史命令把环境搭起来，于是在自己服务器上部署了一样的系统。</p>
+<p>没学过java，自动化java审计工具还收费，就手工一个方法一个方法康康把<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962408552-13d768d8-4c2d-40aa-a0e7-2ddb002d7379.png#"><br>找了大半天，都快想放弃了…</p>
+<p>不过这套系统有mysql，先看看数据里面的结构吧。大概长这样<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962408941-38155396-7b98-44eb-a7e3-bad653f4764d.png#"><br>随后在管理网站用户的表里面发现了一个系统自带的账户(这里用账户x表示)，账户x比admin权限还要高</p>
+<p><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962409259-95d759cb-2ab1-4fc5-8142-971a28e1c000.png#"><br>把密码放到cmd5查一下<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962409546-10ef4c4f-f268-47bf-8c70-9e130533b92b.png#"><br>要钱？我穷的一批，没钱，反手找好师傅查一查，好师傅很快啊，就回了消息<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962409796-0f215a49-d4f9-4042-8759-171f53245a72.png#"><br>随后我用这个账户x登录自己搭建的系统，发现在网站是根本查不到这个账户存在的，也就是说可能是开发商留下的。<br>嘿嘿，有了这个账号，其他系统都可以登录了。</p>
+<p>随后发现系统有一个上传点可以上传文件，既然都到白盒了，那么可以部署一个文件实时监控工具，看看发生变化的文件，也可以看看等会要上传的文件是否上传了。<br>这里使用了<strong>FileMonitor</strong>来监控文件<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962410127-439aff48-998d-4fcd-a26c-52019698d0f1.png#"><br>上传文件、抓包改后改后缀.jsp<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962410353-e53f03a5-1ef5-4609-b51e-f8918d26f576.png#"><br>提示上传失败<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962410671-09e5bfa3-b654-4b11-96c6-1d1ca5ef5b6f.png#"><br>看看文件监控，已经能上传上去了<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962410874-cc02045d-ce00-4efb-9adc-d81f6bb24f0c.png#"><br>后缀可控，但是文件名不可控，这可麻烦了，一般文件名都是以时间戳或者有特定的算法命名，再多上传几次看看<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962411318-9d39613e-1b1d-4d4e-8e0b-acfe6f5a91c4.png#"><br>看起来也没啥规律啊</p>
+<p>翻看一下下载的网站源码中的class文件。再看看请求的地址<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962411580-f0652149-73a7-4f07-8346-88c3babedfca.png#"><br>应该是upload类里面的Uploadfile方法（没学过Java，不知道对不对，别喷~）<br>找到了Uploadfile方法一行一行的看，头晕啊，但是最后还是找到了生成文件名的方法=-=<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962411827-a001a278-ffca-4315-974c-e21d6c6b16be.png#"><br>让我康康UUID.randomUUID().toString()是个啥<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962412099-c41e5c30-b3da-43f8-9b7e-02b03e424b87.png#"><br>三部分组成：当前日期和时间+时钟序列+全局唯一的IEEE机器识别号(网卡mac地址)<br>突然想了想，前两个估计还能想办法得到，但是最后一个网卡的mac地址，就很难了，任意文件下载是下载不到带有网卡mac地址的文件的（如果有，当我放屁）<br>又一条路被堵死了</p>
+<p>过了几个小时(别问为啥是几个小时，因为睡觉去了)，又发现一个上传点<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962412281-b9df7919-733e-4676-a051-fe030f51929a.png#"><br>嘿嘿，这不有手就行吗？文件监控开起来！！<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962412478-da1354fb-a2ff-45af-b61f-0fc849315a5c.png#"><br>直接传🐎！！<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962412718-4622c51b-067c-49dc-b6e2-009d171f56c2.png#"><br>回显了地址！！！芜湖<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962412893-f26ec783-2d78-4429-9b24-3663cbbb6173.png#"><br>冰蝎连上去<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962413134-8879c3d3-cb14-4731-8d4b-9a4a0ef04bd8.png#"><br>芜湖！我日我自己…才发现这是我自己的服务器<br>最后如法炮制，利用系统自带的账号登录系统，然后用第二个上传点传🐎即可。<br>搞一些成果图<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962413452-570db4c0-9869-487f-8a75-e88b17308d93.png#"><br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962413883-077eb1ab-321a-4dc5-b12c-307687237345.png#"></p>
+<p>最后交cnvd去了，证书归档之后周三或者周四就会发证<br><img src="https://cdn.nlark.com/yuque/0/2021/png/12723962/1638962414594-1b7bf623-28af-4b81-b753-f4c0976413bd.png#"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Wake</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/01/19/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%88%B0getshell/">http://example.com/2022/01/19/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%88%B0getshell/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Wake</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">Web渗透测试</a></div><div class="post_share"><div class="social-share" data-image="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/01/19/hello-world/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Hello World</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://i.loli.net/2021/02/24/5O1day2nriDzjSu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Wake</div><div class="author-info__description">test测试</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">1</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/01/19/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%88%B0getshell/" title="记一次从任意文件下载到getshell"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="记一次从任意文件下载到getshell"/></a><div class="content"><a class="title" href="/2022/01/19/%E8%AE%B0%E4%B8%80%E6%AC%A1%E4%BB%8E%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E4%B8%8B%E8%BD%BD%E5%88%B0getshell/" title="记一次从任意文件下载到getshell">记一次从任意文件下载到getshell</a><time datetime="2022-01-19T03:42:13.000Z" title="发表于 2022-01-19 11:42:13">2022-01-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/01/19/hello-world/" title="Hello World"><img src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/01/19/hello-world/" title="Hello World">Hello World</a><time datetime="2022-01-19T02:43:16.178Z" title="发表于 2022-01-19 10:43:16">2022-01-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Wake</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/hibiki.model.json"},"display":{"position":"right","width":250,"height":500},"mobile":{"show":true},"log":false});</script></body></html>
